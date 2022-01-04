@@ -1,0 +1,559 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='UTF-8'><meta name='viewport' content='width=device-width initial-scale=1'>
+<title>二、Wireshark 实验</title><link href='https://fonts.loli.net/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext' rel='stylesheet' type='text/css' /><style type='text/css'>html {overflow-x: initial !important;}:root { --bg-color:#ffffff; --text-color:#333333; --select-text-bg-color:#B5D6FC; --select-text-font-color:auto; --monospace:"Lucida Console",Consolas,"Courier",monospace; --title-bar-height:20px; }
+.mac-os-11 { --title-bar-height:28px; }
+html { font-size: 14px; background-color: var(--bg-color); color: var(--text-color); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+body { margin: 0px; padding: 0px; height: auto; bottom: 0px; top: 0px; left: 0px; right: 0px; font-size: 1rem; line-height: 1.42857; overflow-x: hidden; background: inherit; tab-size: 4; }
+iframe { margin: auto; }
+a.url { word-break: break-all; }
+a:active, a:hover { outline: 0px; }
+.in-text-selection, ::selection { text-shadow: none; background: var(--select-text-bg-color); color: var(--select-text-font-color); }
+#write { margin: 0px auto; height: auto; width: inherit; word-break: normal; overflow-wrap: break-word; position: relative; white-space: normal; overflow-x: visible; padding-top: 36px; }
+#write.first-line-indent p { text-indent: 2em; }
+#write.first-line-indent li p, #write.first-line-indent p * { text-indent: 0px; }
+#write.first-line-indent li { margin-left: 2em; }
+.for-image #write { padding-left: 8px; padding-right: 8px; }
+body.typora-export { padding-left: 30px; padding-right: 30px; }
+.typora-export .footnote-line, .typora-export li, .typora-export p { white-space: pre-wrap; }
+.typora-export .task-list-item input { pointer-events: none; }
+@media screen and (max-width: 500px) {
+  body.typora-export { padding-left: 0px; padding-right: 0px; }
+  #write { padding-left: 20px; padding-right: 20px; }
+  .CodeMirror-sizer { margin-left: 0px !important; }
+  .CodeMirror-gutters { display: none !important; }
+}
+#write li > figure:last-child { margin-bottom: 0.5rem; }
+#write ol, #write ul { position: relative; }
+img { max-width: 100%; vertical-align: middle; image-orientation: from-image; }
+button, input, select, textarea { color: inherit; font: inherit; }
+input[type="checkbox"], input[type="radio"] { line-height: normal; padding: 0px; }
+*, ::after, ::before { box-sizing: border-box; }
+#write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write p, #write pre { width: inherit; }
+#write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write p { position: relative; }
+p { line-height: inherit; }
+h1, h2, h3, h4, h5, h6 { break-after: avoid-page; break-inside: avoid; orphans: 4; }
+p { orphans: 4; }
+h1 { font-size: 2rem; }
+h2 { font-size: 1.8rem; }
+h3 { font-size: 1.6rem; }
+h4 { font-size: 1.4rem; }
+h5 { font-size: 1.2rem; }
+h6 { font-size: 1rem; }
+.md-math-block, .md-rawblock, h1, h2, h3, h4, h5, h6, p { margin-top: 1rem; margin-bottom: 1rem; }
+.hidden { display: none; }
+.md-blockmeta { color: rgb(204, 204, 204); font-weight: 700; font-style: italic; }
+a { cursor: pointer; }
+sup.md-footnote { padding: 2px 4px; background-color: rgba(238, 238, 238, 0.7); color: rgb(85, 85, 85); border-radius: 4px; cursor: pointer; }
+sup.md-footnote a, sup.md-footnote a:hover { color: inherit; text-transform: inherit; text-decoration: inherit; }
+#write input[type="checkbox"] { cursor: pointer; width: inherit; height: inherit; }
+figure { overflow-x: auto; margin: 1.2em 0px; max-width: calc(100% + 16px); padding: 0px; }
+figure > table { margin: 0px; }
+tr { break-inside: avoid; break-after: auto; }
+thead { display: table-header-group; }
+table { border-collapse: collapse; border-spacing: 0px; width: 100%; overflow: auto; break-inside: auto; text-align: left; }
+table.md-table td { min-width: 32px; }
+.CodeMirror-gutters { border-right: 0px; background-color: inherit; }
+.CodeMirror-linenumber { user-select: none; }
+.CodeMirror { text-align: left; }
+.CodeMirror-placeholder { opacity: 0.3; }
+.CodeMirror pre { padding: 0px 4px; }
+.CodeMirror-lines { padding: 0px; }
+div.hr:focus { cursor: none; }
+#write pre { white-space: pre-wrap; }
+#write.fences-no-line-wrapping pre { white-space: pre; }
+#write pre.ty-contain-cm { white-space: normal; }
+.CodeMirror-gutters { margin-right: 4px; }
+.md-fences { font-size: 0.9rem; display: block; break-inside: avoid; text-align: left; overflow: visible; white-space: pre; background: inherit; position: relative !important; }
+.md-diagram-panel { width: 100%; margin-top: 10px; text-align: center; padding-top: 0px; padding-bottom: 8px; overflow-x: auto; }
+#write .md-fences.mock-cm { white-space: pre-wrap; }
+.md-fences.md-fences-with-lineno { padding-left: 0px; }
+#write.fences-no-line-wrapping .md-fences.mock-cm { white-space: pre; overflow-x: auto; }
+.md-fences.mock-cm.md-fences-with-lineno { padding-left: 8px; }
+.CodeMirror-line, twitterwidget { break-inside: avoid; }
+.footnotes { opacity: 0.8; font-size: 0.9rem; margin-top: 1em; margin-bottom: 1em; }
+.footnotes + .footnotes { margin-top: 0px; }
+.md-reset { margin: 0px; padding: 0px; border: 0px; outline: 0px; vertical-align: top; background: 0px 0px; text-decoration: none; text-shadow: none; float: none; position: static; width: auto; height: auto; white-space: nowrap; cursor: inherit; -webkit-tap-highlight-color: transparent; line-height: normal; font-weight: 400; text-align: left; box-sizing: content-box; direction: ltr; }
+li div { padding-top: 0px; }
+blockquote { margin: 1rem 0px; }
+li .mathjax-block, li p { margin: 0.5rem 0px; }
+li blockquote { margin: 1rem 0px; }
+li { margin: 0px; position: relative; }
+blockquote > :last-child { margin-bottom: 0px; }
+blockquote > :first-child, li > :first-child { margin-top: 0px; }
+.footnotes-area { color: rgb(136, 136, 136); margin-top: 0.714rem; padding-bottom: 0.143rem; white-space: normal; }
+#write .footnote-line { white-space: pre-wrap; }
+@media print {
+  body, html { border: 1px solid transparent; height: 99%; break-after: avoid; break-before: avoid; font-variant-ligatures: no-common-ligatures; }
+  #write { margin-top: 0px; padding-top: 0px; border-color: transparent !important; }
+  .typora-export * { -webkit-print-color-adjust: exact; }
+  .typora-export #write { break-after: avoid; }
+  .typora-export #write::after { height: 0px; }
+  .is-mac table { break-inside: avoid; }
+}
+.footnote-line { margin-top: 0.714em; font-size: 0.7em; }
+a img, img a { cursor: pointer; }
+pre.md-meta-block { font-size: 0.8rem; min-height: 0.8rem; white-space: pre-wrap; background: rgb(204, 204, 204); display: block; overflow-x: hidden; }
+p > .md-image:only-child:not(.md-img-error) img, p > img:only-child { display: block; margin: auto; }
+#write.first-line-indent p > .md-image:only-child:not(.md-img-error) img { left: -2em; position: relative; }
+p > .md-image:only-child { display: inline-block; width: 100%; }
+#write .MathJax_Display { margin: 0.8em 0px 0px; }
+.md-math-block { width: 100%; }
+.md-math-block:not(:empty)::after { display: none; }
+.MathJax_ref { fill: currentcolor; }
+[contenteditable="true"]:active, [contenteditable="true"]:focus, [contenteditable="false"]:active, [contenteditable="false"]:focus { outline: 0px; box-shadow: none; }
+.md-task-list-item { position: relative; list-style-type: none; }
+.task-list-item.md-task-list-item { padding-left: 0px; }
+.md-task-list-item > input { position: absolute; top: 0px; left: 0px; margin-left: -1.2em; margin-top: calc(1em - 10px); border: none; }
+.math { font-size: 1rem; }
+.md-toc { min-height: 3.58rem; position: relative; font-size: 0.9rem; border-radius: 10px; }
+.md-toc-content { position: relative; margin-left: 0px; }
+.md-toc-content::after, .md-toc::after { display: none; }
+.md-toc-item { display: block; color: rgb(65, 131, 196); }
+.md-toc-item a { text-decoration: none; }
+.md-toc-inner:hover { text-decoration: underline; }
+.md-toc-inner { display: inline-block; cursor: pointer; }
+.md-toc-h1 .md-toc-inner { margin-left: 0px; font-weight: 700; }
+.md-toc-h2 .md-toc-inner { margin-left: 2em; }
+.md-toc-h3 .md-toc-inner { margin-left: 4em; }
+.md-toc-h4 .md-toc-inner { margin-left: 6em; }
+.md-toc-h5 .md-toc-inner { margin-left: 8em; }
+.md-toc-h6 .md-toc-inner { margin-left: 10em; }
+@media screen and (max-width: 48em) {
+  .md-toc-h3 .md-toc-inner { margin-left: 3.5em; }
+  .md-toc-h4 .md-toc-inner { margin-left: 5em; }
+  .md-toc-h5 .md-toc-inner { margin-left: 6.5em; }
+  .md-toc-h6 .md-toc-inner { margin-left: 8em; }
+}
+a.md-toc-inner { font-size: inherit; font-style: inherit; font-weight: inherit; line-height: inherit; }
+.footnote-line a:not(.reversefootnote) { color: inherit; }
+.md-attr { display: none; }
+.md-fn-count::after { content: "."; }
+code, pre, samp, tt { font-family: var(--monospace); }
+kbd { margin: 0px 0.1em; padding: 0.1em 0.6em; font-size: 0.8em; color: rgb(36, 39, 41); background: rgb(255, 255, 255); border: 1px solid rgb(173, 179, 185); border-radius: 3px; box-shadow: rgba(12, 13, 14, 0.2) 0px 1px 0px, rgb(255, 255, 255) 0px 0px 0px 2px inset; white-space: nowrap; vertical-align: middle; }
+.md-comment { color: rgb(162, 127, 3); opacity: 0.8; font-family: var(--monospace); }
+code { text-align: left; vertical-align: initial; }
+a.md-print-anchor { white-space: pre !important; border-width: initial !important; border-style: none !important; border-color: initial !important; display: inline-block !important; position: absolute !important; width: 1px !important; right: 0px !important; outline: 0px !important; background: 0px 0px !important; text-decoration: initial !important; text-shadow: initial !important; }
+.md-inline-math .MathJax_SVG .noError { display: none !important; }
+.html-for-mac .inline-math-svg .MathJax_SVG { vertical-align: 0.2px; }
+.md-math-block .MathJax_SVG_Display { text-align: center; margin: 0px; position: relative; text-indent: 0px; max-width: none; max-height: none; min-height: 0px; min-width: 100%; width: auto; overflow-y: hidden; display: block !important; }
+.MathJax_SVG_Display, .md-inline-math .MathJax_SVG_Display { width: auto; margin: inherit; display: inline-block !important; }
+.MathJax_SVG .MJX-monospace { font-family: var(--monospace); }
+.MathJax_SVG .MJX-sans-serif { font-family: sans-serif; }
+.MathJax_SVG { display: inline; font-style: normal; font-weight: 400; line-height: normal; zoom: 90%; text-indent: 0px; text-align: left; text-transform: none; letter-spacing: normal; word-spacing: normal; overflow-wrap: normal; white-space: nowrap; float: none; direction: ltr; max-width: none; max-height: none; min-width: 0px; min-height: 0px; border: 0px; padding: 0px; margin: 0px; }
+.MathJax_SVG * { transition: none 0s ease 0s; }
+.MathJax_SVG_Display svg { vertical-align: middle !important; margin-bottom: 0px !important; margin-top: 0px !important; }
+.os-windows.monocolor-emoji .md-emoji { font-family: "Segoe UI Symbol", sans-serif; }
+.md-diagram-panel > svg { max-width: 100%; }
+[lang="flow"] svg, [lang="mermaid"] svg { max-width: 100%; height: auto; }
+[lang="mermaid"] .node text { font-size: 1rem; }
+table tr th { border-bottom: 0px; }
+video { max-width: 100%; display: block; margin: 0px auto; }
+iframe { max-width: 100%; width: 100%; border: none; }
+.highlight td, .highlight tr { border: 0px; }
+mark { background: rgb(255, 255, 0); color: rgb(0, 0, 0); }
+.md-html-inline .md-plain, .md-html-inline strong, mark .md-inline-math, mark strong { color: inherit; }
+mark .md-meta { color: rgb(0, 0, 0); opacity: 0.3 !important; }
+@media print {
+  .typora-export h1, .typora-export h2, .typora-export h3, .typora-export h4, .typora-export h5, .typora-export h6 { break-inside: avoid; }
+}
+.md-diagram-panel .messageText { stroke: none !important; }
+.md-diagram-panel .start-state { fill: var(--node-fill); }
+.md-diagram-panel .edgeLabel rect { opacity: 1 !important; }
+.md-require-zoom-fix foreignobject { font-size: var(--mermaid-font-zoom); }
+
+
+:root {
+    --side-bar-bg-color: #fafafa;
+    --control-text-color: #777;
+}
+
+@include-when-export url(https://fonts.loli.net/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext);
+
+/* open-sans-regular - latin-ext_latin */
+  /* open-sans-italic - latin-ext_latin */
+    /* open-sans-700 - latin-ext_latin */
+    /* open-sans-700italic - latin-ext_latin */
+  html {
+    font-size: 16px;
+}
+
+body {
+    font-family: "Open Sans","Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: rgb(51, 51, 51);
+    line-height: 1.6;
+}
+
+#write {
+    max-width: 860px;
+  	margin: 0 auto;
+  	padding: 30px;
+    padding-bottom: 100px;
+}
+
+@media only screen and (min-width: 1400px) {
+	#write {
+		max-width: 1024px;
+	}
+}
+
+@media only screen and (min-width: 1800px) {
+	#write {
+		max-width: 1200px;
+	}
+}
+
+#write > ul:first-child,
+#write > ol:first-child{
+    margin-top: 30px;
+}
+
+a {
+    color: #4183C4;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    position: relative;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    line-height: 1.4;
+    cursor: text;
+}
+h1:hover a.anchor,
+h2:hover a.anchor,
+h3:hover a.anchor,
+h4:hover a.anchor,
+h5:hover a.anchor,
+h6:hover a.anchor {
+    text-decoration: none;
+}
+h1 tt,
+h1 code {
+    font-size: inherit;
+}
+h2 tt,
+h2 code {
+    font-size: inherit;
+}
+h3 tt,
+h3 code {
+    font-size: inherit;
+}
+h4 tt,
+h4 code {
+    font-size: inherit;
+}
+h5 tt,
+h5 code {
+    font-size: inherit;
+}
+h6 tt,
+h6 code {
+    font-size: inherit;
+}
+h1 {
+    font-size: 2.25em;
+    line-height: 1.2;
+    border-bottom: 1px solid #eee;
+}
+h2 {
+    font-size: 1.75em;
+    line-height: 1.225;
+    border-bottom: 1px solid #eee;
+}
+
+/*@media print {
+    .typora-export h1,
+    .typora-export h2 {
+        border-bottom: none;
+        padding-bottom: initial;
+    }
+
+    .typora-export h1::after,
+    .typora-export h2::after {
+        content: "";
+        display: block;
+        height: 100px;
+        margin-top: -96px;
+        border-top: 1px solid #eee;
+    }
+}*/
+
+h3 {
+    font-size: 1.5em;
+    line-height: 1.43;
+}
+h4 {
+    font-size: 1.25em;
+}
+h5 {
+    font-size: 1em;
+}
+h6 {
+   font-size: 1em;
+    color: #777;
+}
+p,
+blockquote,
+ul,
+ol,
+dl,
+table{
+    margin: 0.8em 0;
+}
+li>ol,
+li>ul {
+    margin: 0 0;
+}
+hr {
+    height: 2px;
+    padding: 0;
+    margin: 16px 0;
+    background-color: #e7e7e7;
+    border: 0 none;
+    overflow: hidden;
+    box-sizing: content-box;
+}
+
+li p.first {
+    display: inline-block;
+}
+ul,
+ol {
+    padding-left: 30px;
+}
+ul:first-child,
+ol:first-child {
+    margin-top: 0;
+}
+ul:last-child,
+ol:last-child {
+    margin-bottom: 0;
+}
+blockquote {
+    border-left: 4px solid #dfe2e5;
+    padding: 0 15px;
+    color: #777777;
+}
+blockquote blockquote {
+    padding-right: 0;
+}
+table {
+    padding: 0;
+    word-break: initial;
+}
+table tr {
+    border-top: 1px solid #dfe2e5;
+    margin: 0;
+    padding: 0;
+}
+table tr:nth-child(2n),
+thead {
+    background-color: #f8f8f8;
+}
+table th {
+    font-weight: bold;
+    border: 1px solid #dfe2e5;
+    border-bottom: 0;
+    margin: 0;
+    padding: 6px 13px;
+}
+table td {
+    border: 1px solid #dfe2e5;
+    margin: 0;
+    padding: 6px 13px;
+}
+table th:first-child,
+table td:first-child {
+    margin-top: 0;
+}
+table th:last-child,
+table td:last-child {
+    margin-bottom: 0;
+}
+
+.CodeMirror-lines {
+    padding-left: 4px;
+}
+
+.code-tooltip {
+    box-shadow: 0 1px 1px 0 rgba(0,28,36,.3);
+    border-top: 1px solid #eef2f2;
+}
+
+.md-fences,
+code,
+tt {
+    border: 1px solid #e7eaed;
+    background-color: #f8f8f8;
+    border-radius: 3px;
+    padding: 0;
+    padding: 2px 4px 0px 4px;
+    font-size: 0.9em;
+}
+
+code {
+    background-color: #f3f4f4;
+    padding: 0 2px 0 2px;
+}
+
+.md-fences {
+    margin-bottom: 15px;
+    margin-top: 15px;
+    padding-top: 8px;
+    padding-bottom: 6px;
+}
+
+
+.md-task-list-item > input {
+  margin-left: -1.3em;
+}
+
+@media print {
+    html {
+        font-size: 13px;
+    }
+    table,
+    pre {
+        page-break-inside: avoid;
+    }
+    pre {
+        word-wrap: break-word;
+    }
+}
+
+.md-fences {
+	background-color: #f8f8f8;
+}
+#write pre.md-meta-block {
+	padding: 1rem;
+    font-size: 85%;
+    line-height: 1.45;
+    background-color: #f7f7f7;
+    border: 0;
+    border-radius: 3px;
+    color: #777777;
+    margin-top: 0 !important;
+}
+
+.mathjax-block>.code-tooltip {
+	bottom: .375rem;
+}
+
+.md-mathjax-midline {
+    background: #fafafa;
+}
+
+#write>h3.md-focus:before{
+	left: -1.5625rem;
+	top: .375rem;
+}
+#write>h4.md-focus:before{
+	left: -1.5625rem;
+	top: .285714286rem;
+}
+#write>h5.md-focus:before{
+	left: -1.5625rem;
+	top: .285714286rem;
+}
+#write>h6.md-focus:before{
+	left: -1.5625rem;
+	top: .285714286rem;
+}
+.md-image>.md-meta {
+    /*border: 1px solid #ddd;*/
+    border-radius: 3px;
+    padding: 2px 0px 0px 4px;
+    font-size: 0.9em;
+    color: inherit;
+}
+
+.md-tag {
+    color: #a7a7a7;
+    opacity: 1;
+}
+
+.md-toc { 
+    margin-top:20px;
+    padding-bottom:20px;
+}
+
+.sidebar-tabs {
+    border-bottom: none;
+}
+
+#typora-quick-open {
+    border: 1px solid #ddd;
+    background-color: #f8f8f8;
+}
+
+#typora-quick-open-item {
+    background-color: #FAFAFA;
+    border-color: #FEFEFE #e5e5e5 #e5e5e5 #eee;
+    border-style: solid;
+    border-width: 1px;
+}
+
+/** focus mode */
+.on-focus-mode blockquote {
+    border-left-color: rgba(85, 85, 85, 0.12);
+}
+
+header, .context-menu, .megamenu-content, footer{
+    font-family: "Segoe UI", "Arial", sans-serif;
+}
+
+.file-node-content:hover .file-node-icon,
+.file-node-content:hover .file-node-open-state{
+    visibility: visible;
+}
+
+.mac-seamless-mode #typora-sidebar {
+    background-color: #fafafa;
+    background-color: var(--side-bar-bg-color);
+}
+
+.md-lang {
+    color: #b4654d;
+}
+
+.html-for-mac .context-menu {
+    --item-hover-bg-color: #E6F0FE;
+}
+
+#md-notification .btn {
+    border: 0;
+}
+
+.dropdown-menu .divider {
+    border-color: #e5e5e5;
+}
+
+.ty-preferences .window-content {
+    background-color: #fafafa;
+}
+
+.ty-preferences .nav-group-item.active {
+    color: white;
+    background: #999;
+}
+
+ :root {--mermaid-font-zoom:1.23958em ;} 
+</style>
+</head>
+<body class='typora-export os-windows'>
+<div id='write'  class=''><h1><a name="二wireshark-实验" class="md-header-anchor"></a><span>二、Wireshark 实验</span></h1><h2><a name="数据链路层" class="md-header-anchor"></a><span>数据链路层</span></h2><h3><a name="实作一-熟悉-ethernet-帧结构" class="md-header-anchor"></a><span>实作一 熟悉 Ethernet 帧结构</span></h3><p><span>使用 Wireshark 任意进行抓包，熟悉 Ethernet 帧的结构，如：目的 MAC、源 MAC、类型、字段等。</span></p><p><span>Destination: 00:74:9c:9f:40:13</span></p><h3><a name="实作二-了解子网内外通信时的-mac-地址" class="md-header-anchor"></a><span>实作二 了解子网内/外通信时的 MAC 地址</span></h3><ol start='' ><li><span>ping 你旁边的计算机（同一子网），同时用 Wireshark 抓这些包，记录一下发出帧的目的 MAC 地址以及返回帧的源 MAC 地址是多少？这个 MAC 地址是谁的？</span></li></ol><p><img src="\Duang.github.io\图片\image-20220103164300195.png" referrerpolicy="no-referrer" alt="image-20220103164300195"></p><p><span>发出帧MAC地址: 54:05:db:f4:84:50</span></p><p><span>返回帧MAC地址:00:74:9c:9f:40:13</span></p><ol start='2' ><li><span>然后 ping qige.io （或者本子网外的主机都可以），同时用 Wireshark 抓这些包（可 icmp 过滤），记录一下发出帧的目的 MAC 地址以及返回帧的源 MAC 地址是多少？这个 MAC 地址是谁的？</span></li></ol><p><img src="\Duang.github.io\图片\image-20220103165009514.png" referrerpolicy="no-referrer" alt="image-20220103165009514"></p><p><span>源MAC地址是：54:05:db:f4:84:50</span></p><p><span>目的MAC地址是：00:74:9c:9f:40:13</span></p><ol start='3' ><li><span>再次 ping </span><a href='http://www.cqjtu.edu.cn' target='_blank' class='url'>www.cqjtu.edu.cn</a><span> （或者本子网外的主机都可以），同时用 Wireshark 抓这些包（可 icmp 过滤），记录一下发出帧的目的 MAC 地址以及返回帧的源 MAC 地址又是多少？这个 MAC 地址又是谁的？</span></li></ol><p><img src="C:\Users\Duang\AppData\Roaming\Typora\typora-user-images\image-20220103165730139.png" referrerpolicy="no-referrer" alt="image-20220103165730139"></p><p><span>源MAC地址是：54:05:db:f4:84:50</span></p><p><span>目的MAC地址是：00:74:9c:9f:40:13</span></p><p>&nbsp;</p><p><span>✎ </span><strong><span>问题</span></strong></p><p><span>通过以上的实验，你会发现：</span></p><ol start='' ><li><span>访问本子网的计算机时，目的 MAC 就是该主机的</span></li><li><span>访问非本子网的计算机时，目的 MAC 是网关的</span></li></ol><ul><li><span>当本机访问的是本子网的计算机，数据包无需离开本通信子网，传输数据也是在本子网里进行，所以是对方主机的MAC物理地址； 当本机访问的是非本子网的计算机，也就是说此时有两个不同通信子网的主机之间需要通信，数据包就需要离开本通信子网，传输数据要离开本通信子网，就势必要经过网关，因此，该目的MAC物理地址就是本网关的物理地址。</span></li></ul><h3><a name="实作三-掌握-arp-解析过程" class="md-header-anchor"></a><span>实作三 掌握 ARP 解析过程</span></h3><ol start='' ><li><span>为防止干扰，先使用 arp -d * 命令清空 arp 缓存</span></li><li><span>ping 你旁边的计算机（同一子网），同时用 Wireshark 抓这些包（可 arp 过滤），查看 ARP 请求的格式以及请求的内容，注意观察该请求的目的 MAC 地址是什么。再查看一下该请求的回应，注意观察该回应的源 MAC 和目的 MAC 地址是什么。</span></li></ol><p><img src="\Duang.github.io\图片\image-20220103170559724.png" referrerpolicy="no-referrer" alt="image-20220103170559724"></p><ol start='3' ><li><span>再次使用 arp -d * 命令清空 arp 缓存</span></li><li><span>然后 ping qige.io （或者本子网外的主机都可以），同时用 Wireshark 抓这些包（可 arp 过滤）。查看这次 ARP 请求的是什么，注意观察该请求是谁在回应。</span></li></ol><p><img src="\Duang.github.io\图片\image-20220103170747240.png" referrerpolicy="no-referrer" alt="image-20220103170747240"></p><p><span>通过广播方式，若访问的是本子网 ip，则 ARP 解析直接得到该 IP 对应的 MAC；</span>
+<span>若访问的是非子网 ip，则 ARP 解析的是网关的 MAC。</span></p><p><span>✎ 问题</span></p><p><span>通过以上的实验，你应该会发现，</span></p><ol start='' ><li><span>ARP 请求都是使用广播方式发送的</span></li><li><span>如果访问的是本子网的 IP，那么 ARP 解析将直接得到该 IP 对应的 MAC；如果访问的非本子网的 IP， 那么 ARP 解析将得到网关的 MAC。</span>
+<span>请问为什么？</span></li></ol><ul><li><span>ping 的时候，通过 ip 以及子网掩码就可以判断是否在同一子网下，如说</span>
+<span>是就可以通过广播方式直接得到对方主机的 MAC 地址，然后发送数据包；如</span>
+<span>果不是在同一子网下，需要发送给网关，如果不知道网关地址则需要通过 ARP</span>
+<span>广播获取网关的 MAC 地址，然后再发送数据。</span></li></ul><h2><a name="网络层" class="md-header-anchor"></a><span>网络层</span></h2><h3><a name="实作一-熟悉-ip-包结构" class="md-header-anchor"></a><span>实作一 熟悉 IP 包结构</span></h3><p><span>IP 数据包结构：</span></p><p><img src="\Duang.github.io\图片\image-20220103171441948.png" referrerpolicy="no-referrer" alt="image-20220103171441948"></p><p><span>使用 Wireshark 任意进行抓包（可用 ip 过滤），熟悉 IP 包的结构，如：版本、头部长度、总长度、TTL、协议类型等字段</span></p><p><img src="\Duang.github.io\图片\image-20220103171822180.png" referrerpolicy="no-referrer" alt="image-20220103171822180"></p><p><span>✎ </span><strong><span>问题</span></strong></p><p><span>为提高效率，我们应该让 IP 的头部尽可能的精简。但在如此珍贵的 IP 头部你会发现既有头部长度字段，也有总长度字段。请问为什么？</span></p><ul><li><span>总长度是头部和数据合的长度</span></li></ul><h3><a name="实作二-ip-包的分段与重组" class="md-header-anchor"></a><span>实作二 IP 包的分段与重组</span></h3><p><span>根据规定，一个 IP 包最大可以有 64K 字节。但由于 Ethernet 帧的限制，当 IP 包的数据超过 1500 字节时就会被发送方的数据链路层分段，然后在接收方的网络层重组。</span></p><p><span>缺省的，</span><code>ping</code><span> 命令只会向对方发送 32 个字节的数据。我们可以使用 </span><code>ping 202.202.240.16 -l 2000</code><span> 命令指定要发送的数据长度。此时使用 Wireshark 抓包（用 </span><code>ip.addr == 202.202.240.16</code><span> 进行过滤），了解 IP 包如何进行分段，如：分段标志、偏移量以及每个包的大小等</span></p><p><img src="\Duang.github.io\图片\image-20220103172145530.png" referrerpolicy="no-referrer" alt="image-20220103172145530"></p><p><img src="\Duang.github.io\图片\image-20220103172215246.png" referrerpolicy="no-referrer" alt="image-20220103172215246"></p><p><span>✎ </span><strong><span>问题</span></strong></p><p><span>分段与重组是一个耗费资源的操作，特别是当分段由传送路径上的节点即路由器来完成的时候，所以 IPv6 已经不允许分段了。那么 IPv6 中，如果路由器遇到了一个大数据包该怎么办？</span></p><ul><li><span>直接丢弃，并返回主机发送失败信息。</span></li></ul><h3><a name="实作三-考察-ttl-事件" class="md-header-anchor"></a><span>实作三 考察 TTL 事件</span></h3><p><span>在 IP 包头中有一个 TTL 字段用来限定该包可以在 Internet上传输多少跳（hops），一般该值设置为 64、128等。</span></p><p><span>在验证性实验部分我们使用了 </span><code>tracert</code><span> 命令进行路由追踪。其原理是主动设置 IP 包的 TTL 值，从 1 开始逐渐增加，直至到达最终目的主机。</span></p><p><span>请使用 </span><code>tracert www.baidu.com</code><span> 命令进行追踪，此时使用 Wireshark 抓包（用 </span><code>icmp</code><span> 过滤），分析每个发送包的 TTL 是如何进行改变的，从而理解路由追踪原理。</span></p><p><img src="\Duang.github.io\图片\image-20220103173040830.png" referrerpolicy="no-referrer" alt="image-20220103173040830"></p><p><img src="\Duang.github.io\图片\image-20220103173051947.png" referrerpolicy="no-referrer" alt="image-20220103173051947"></p><p><img src="\Duang.github.io\图片\image-20220103173122032.png" referrerpolicy="no-referrer" alt="image-20220103173122032"></p><p><span>✎ </span><strong><span>问题</span></strong></p><p><span>在 IPv4 中，TTL 虽然定义为生命期即 Time To Live，但现实中我们都以跳数/节点数进行设置。如果你收到一个包，其 TTL 的值为 50，那么可以推断这个包从源点到你之间有多少跳？</span></p><ul><li><span>一般设置初始值为 2^n,收到包为 50，最接近 TTL 的 n 值为 6，故</span>
+<span>TTL=2^6=64，故一共有 64-50=14 跳。</span></li></ul><h2><a name="传输层" class="md-header-anchor"></a><span>传输层</span></h2><h3><a name="实作一-熟悉-tcp-和-udp-段结构" class="md-header-anchor"></a><span>实作一 熟悉 TCP 和 UDP 段结构</span></h3><ol start='' ><li><span>用 Wireshark 任意抓包（可用 tcp 过滤），熟悉 TCP 段的结构，如：源端口、目的端口、序列号、确认号、各种标志位等字段。</span></li></ol><p><img src="\Duang.github.io\图片\image-20220103174052639.png" referrerpolicy="no-referrer" alt="image-20220103174052639"></p><ol start='2' ><li><span>用 Wireshark 任意抓包（可用 udp 过滤），熟悉 UDP 段的结构，如：源端口、目的端口、长度等。</span></li></ol><p><img src="\Duang.github.io\图片\image-20220103174216587.png" referrerpolicy="no-referrer" alt="image-20220103174216587"></p><p><span>✎ </span><strong><span>问题</span></strong></p><p><span>由上大家可以看到 UDP 的头部比 TCP 简单得多，但两者都有源和目的端口号。请问源和目的端口号用来干什么？</span></p><ul><li><span>端口号：标识同一台计算机的不同应用进程</span></li><li><span>源端口号：源端口号和IP地址的作用是标示报文的返回地址</span></li><li><span>目的端口号：端口指明接收方计算机上的应用程序接口。</span></li></ul><h3><a name="实作二-分析-tcp-建立和释放连接" class="md-header-anchor"></a><span>实作二 分析 TCP 建立和释放连接</span></h3><ol start='' ><li><span>打开浏览器访问 qige.io 网站，用 Wireshark 抓包（可用 tcp 过滤后再使用加上 </span><code>Follow TCP Stream</code><span>），不要立即停止 Wireshark 捕获，待页面显示完毕后再多等一段时间使得能够捕获释放连接的包。</span></li></ol><p><img src="\Duang.github.io\图片\image-20220103174636858.png" referrerpolicy="no-referrer" alt="image-20220103174636858"></p><ol start='2' ><li><span>请在你捕获的包中找到三次握手建立连接的包，并说明为何它们是用于建立连接的，有什么特征。</span></li></ol><p><span>第一次握手通过 SYN 为标志发送 TCP 文报，客户端序号 Seq 为 0； </span></p><p><span>第二次握手通过 SYN，ACK 为标志，客户端序号 Seq=0，确认号 ACK=1； </span></p><p><span>第三次握手通过 ACK 为标志，客户端序号 Seq=1，确认号 ACK=1。</span></p><p><img src="\Duang.github.io\图片\image-20220103174902805.png" referrerpolicy="no-referrer" alt="image-20220103174902805"></p><ol start='3' ><li><span>请在你捕获的包中找到四次挥手释放连接的包，并说明为何它们是用于释放连接的，有什么特征。</span></li></ol><p><img src="\Duang.github.io\图片\image-20220103175001605.png" referrerpolicy="no-referrer" alt="image-20220103175001605"></p><p><span>✎ </span><strong><span>问题一</span></strong></p><p><span>去掉 </span><code>Follow TCP Stream</code><span>，即不跟踪一个 TCP 流，你可能会看到访问 </span><code>qige.io</code><span> 时我们建立的连接有多个。请思考为什么会有多个连接？作用是什么</span></p><ul><li><span>多个连接是建立多个传送通道，这样可以加快数据传输。</span></li></ul><p><span>✎ </span><strong><span>问题二</span></strong></p><p><span>我们上面提到了释放连接需要四次挥手，有时你可能会抓到只有三次挥手。原因是什么？</span></p><ul><li><span>因为第三次挥手与第二次握手合并了，FIN 报文在本端没有发送数据给对方时，关闭本段到对端的连接，但是并不影响从对放到本端的连接，故即使通道关闭，接收通道仍然正常。如果对方也没有数据发给本端，那么对方也会发送 FIN 给本端，用于关闭从对方到本端的连接，这就可能出现 ACK 和 FIN 合在一起的情况</span></li></ul><h2><a name="应用层" class="md-header-anchor"></a><span>应用层</span></h2><h3><a name="实作一-了解-dns-解析" class="md-header-anchor"></a><span>实作一 了解 DNS 解析</span></h3><ol start='' ><li><span>先使用 </span><code>ipconfig /flushdns</code><span> 命令清除缓存，再使用 </span><code>nslookup qige.io</code><span> 命令进行解析，同时用 Wireshark 任意抓包（可用 dns 过滤）。</span></li><li><span>你应该可以看到当前计算机使用 UDP，向默认的 DNS 服务器的 53 号端口发出了查询请求，而 DNS 服务器的 53 号端口返回了结果。</span></li><li><span>可了解一下 DNS 查询和应答的相关字段的含义</span></li></ol><p><img src="\Duang.github.io\图片\image-20220103175714651.png" referrerpolicy="no-referrer" alt="image-20220103175714651"></p><p><img src="\Duang.github.io\图片\image-20220103175730436.png" referrerpolicy="no-referrer" alt="image-20220103175730436"></p><p><span>DNS 报文表格如下：</span></p><p><img src="\Duang.github.io\图片\image-20220103175836837.png" referrerpolicy="no-referrer" alt="image-20220103175836837"></p><p><span>✎ </span><strong><span>问题</span></strong></p><p><span>你可能会发现对同一个站点，我们发出的 DNS 解析请求不止一个，思考一下是什么原因？</span></p><ul><li><span>一个域名下面肯定不止一个服务器，发送DNS解析请求的时候不会一直连在一个服务器，连接不同的服务器就会有不同的服务器地址</span></li></ul><h3><a name="实作二-了解-http-的请求和应答" class="md-header-anchor"></a><span>实作二 了解 HTTP 的请求和应答</span></h3><ol start='' ><li><span>打开浏览器访问 qige.io 网站，用 Wireshark 抓包（可用http 过滤再加上 </span><code>Follow TCP Stream</code><span>），不要立即停止 Wireshark 捕获，待页面显示完毕后再多等一段时间以将释放连接的包捕获。</span></li><li><span>请在你捕获的包中找到 HTTP 请求包，查看请求使用的什么命令，如：</span><code>GET, POST</code><span>。并仔细了解请求的头部有哪些字段及其意义。</span></li></ol><p><img src="\Duang.github.io\图片\image-20220103180850720.png" referrerpolicy="no-referrer" alt="image-20220103180850720"></p><p>&nbsp;</p><ul><li><span>Accept：text/html application/xml 告诉服务器客户端浏览器这边可以出里什么 数据；</span></li><li><span>Accept-Encodeing：gzip 告诉服务器我能支持什么样的压缩格式 </span></li><li><span>accept-language：告诉服务器浏览器支持的语言</span></li><li><span>Cache-control：告诉服务器是否缓存 </span></li><li><span>Connection:keep-alive 告诉服务器当前保持活跃（与服务器处于链接状态） </span></li><li><span>Host：远程服务器的域名 </span></li><li><span>User-agent：客户端的一些信息，浏览器信息版本 </span></li><li><span>referer：当前页面上一个页面地址。一般用于服务器判断是否为同一个域名下的请求</span></li></ul><p><span>意义：</span></p><ul><li><span>Accept:告诉 WEB 服务器自己接受什么介质类型；</span></li><li><span>Host:客户端指定自己想访问的 WEB 服务器的域名/IP 地址和端口号；</span></li><li><span>POST:请求的方式，其中包括 URI 和版本；</span></li><li><span>GET：获取的方式等等。</span></li></ul><ol start='3' ><li><span>请在你捕获的包中找到 HTTP 应答包，查看应答的代码是什么，如：200, 304, 404 等。并仔细了解应答的头部有哪些字段及其意义。</span></li></ol><ul><li><span>200：交易成功；304：客户端已经执行了GET，但文件未变化；404：没有发现文件、查询或URl.</span></li></ul><p><span>✎ </span><strong><span>问题</span></strong></p><p><span>刷新一次 qige.io 网站的页面同时进行抓包，你会发现不少的 </span><code>304</code><span> 代码的应答，这是所请求的对象没有更改的意思，让浏览器使用本地缓存的内容即可。那么服务器为什么会回答 </span><code>304</code><span> 应答而不是常见的 </span><code>200</code><span> 应答？</span></p><ol start='' ><li><span>初始状态:第一次访问时，向服务器发送请求，成功收到相应，则返回 200，浏览器此时下载资源文件， 并记录下response header和返回时间。 </span></li><li><span>再次请求:再次访问相同的资源的时候，本地先判断是否需要发送请求给服 务器，此时比较当前时间和 上一次返回200时的时间差，如果没有超过过期时 间，则命中强缓存，读取本地资源文件。如果已经过期了， 那么就向服务器发 送header带有 If-None-Match 和 If-Modified-Since的请求 </span></li><li><span>服务器收到请求后，优先根据Etag值判断被请求的文件有没有被修改过， Etag值是一致的表示没有被修 改，命中协商缓存，返回304;如果不一致则表示 有改动，直接返回新的资源文件并带上新的Etag值并返回 200; </span></li><li><span>如果服务 器收到请求没有Etag值，则将If-Modified-Since和被请求文件的最后修改时间做 比对，一 致则命中协商缓存，返回304;不一致则返回新的last-modified和文件 并返回200;</span></li></ol></div>
+</body>
+</html>
